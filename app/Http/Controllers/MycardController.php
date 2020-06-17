@@ -32,13 +32,14 @@ class MycardController extends Controller
         if ($process->isSuccessful()) {
             // throw new ProcessFailedException($process);
             $contents = File::get(storage_path('app\mykad32bit\mykad.txt'));
-            if($contents == 'Invalid license key. Please contact your vendor.'){
+
+                $array_mycard = explode("|",$contents);
+            if(empty($array_mycard[1])){
                 
                 $responce = new stdClass();
                 $responce->status = 'failed';
-                $responce->reason = 'Invalid license key. Please contact your vendor.';
+                $responce->reason = $array_mycard[0];
             }else{
-                $array_mycard = explode("|",$contents);
                 
                 $responce = new stdClass();
                 $respoce->status = 'success';
