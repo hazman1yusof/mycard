@@ -9,6 +9,7 @@ use File;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Illuminate\Support\Facades\Storage;
+use Image;
 
 class MycardController extends Controller
 {   
@@ -25,15 +26,16 @@ class MycardController extends Controller
 
         // dd(storage_path('app\mykad32bit\runmycard.bat'));
         // $process = new Process('C:\laragon\www\msoftweb\app\Http\Controllers\util\runbarcode.bat');
-        $process = new Process([storage_path('app\mykad32bit\runmycard.bat')]);
+        $process = new Process([storage_path('app\mykad32bit\mykad.exe')]);
         $process->run();
 
         // executes after the command finishes
         if ($process->isSuccessful()) {
+
             // throw new ProcessFailedException($process);
             $contents = File::get(storage_path('app\mykad32bit\mykad.txt'));
 
-                $array_mycard = explode("|",$contents);
+            $array_mycard = explode("|",$contents);
             if(empty($array_mycard[1])){
                 
                 $responce = new stdClass();
@@ -42,7 +44,7 @@ class MycardController extends Controller
             }else{
                 
                 $responce = new stdClass();
-                $respoce->status = 'success';
+                $responce->status = 'success';
                 $responce->ic = $array_mycard[0];
                 $responce->dob = $array_mycard[1];
                 $responce->birthplace = $array_mycard[2];
@@ -57,6 +59,12 @@ class MycardController extends Controller
                 $responce->postcode = $array_mycard[11];
                 $responce->city = $array_mycard[12];
                 $responce->state = $array_mycard[13];
+
+                $img = Image::make(storage_path('app\mykad32bit\myphotov1.jpg'));
+
+                // $file = File::get(storage_path('app\mykad32bit\myphotov1.jpg'));
+                // dd((string) $img->encode('data-url'));
+                $responce->mykad_photo = (string) $img->encode('data-url');
             }
         }else{
 
