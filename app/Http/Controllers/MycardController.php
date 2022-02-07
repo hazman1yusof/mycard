@@ -52,6 +52,7 @@ class MycardController extends Controller
             $responce->postcode = $array_mycard[11];
             $responce->city = $array_mycard[12];
             $responce->state = $array_mycard[13];
+            $responce->photo = $array_mycard[14];
             return json_encode($responce);
 
 
