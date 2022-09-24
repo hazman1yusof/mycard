@@ -19,6 +19,13 @@ class MycardController extends Controller
 
     }
 
+    public function show(Request $request)
+    {
+
+        return view('mykadfp');
+ 
+    }
+
     public function read_mykad(Request $request)
     {   
 

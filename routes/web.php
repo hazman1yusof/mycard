@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 
 
+Route::get('/mykad','MycardController@show');
 Route::get('/read_mykad','MycardController@read_mykad');
 Route::get('/read_mykid','MycardController@read_mykid');
 
