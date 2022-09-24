@@ -15,6 +15,10 @@ class TrustHosts extends Middleware
     {
         return [
             $this->allSubdomainsOfApplicationUrl(),
+            "http://175.143.1.33:8080/",
+            "http://175.143.1.33:8080/*",
+            "http://175.143.1.33",
+            "http://175.143.1.33:8080",
         ];
     }
 }
