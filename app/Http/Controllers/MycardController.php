@@ -11,6 +11,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Illuminate\Support\Facades\Storage;
 use Image;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 
 class MycardController extends Controller
 {   
@@ -126,19 +127,19 @@ class MycardController extends Controller
 
         $dob = Carbon::createFromFormat('d-m-Y',$array_mycard[1])->format('Y-m-d');
 
-        $religion_db = DB::table('hisdb.religion')
-                            ->where('compcode',$compcode)
-                            ->where('Code',$array_mycard[5]);
-        if(!$religion_db->exists()){
-            DB::table('hisdb.religion')
-                ->insert([
-                    'compcode' => $compcode, 
-                    'Code' => $array_mycard[5], 
-                    'Description' => $array_mycard[5], 
-                    'adduser' => 'SYSTEM',
-                    'adddate' => Carbon::now("Asia/Kuala_Lumpur")
-                ]);
-        }
+        // $religion_db = DB::table('hisdb.religion')
+        //                     ->where('compcode',$compcode)
+        //                     ->where('Code',$array_mycard[5]);
+        // if(!$religion_db->exists()){
+        //     DB::table('hisdb.religion')
+        //         ->insert([
+        //             'compcode' => $compcode, 
+        //             'Code' => $array_mycard[5], 
+        //             'Description' => $array_mycard[5], 
+        //             'adduser' => 'SYSTEM',
+        //             'adddate' => Carbon::now("Asia/Kuala_Lumpur")
+        //         ]);
+        // }
 
         if(strtoupper($array_mycard[6]) == 'MALE' || strtoupper($array_mycard[6]) == 'LELAKI' || strtoupper($array_mycard[6]) == 'M' || strtoupper($array_mycard[6]) == 'L'){
             $sex = 'M';
@@ -148,19 +149,19 @@ class MycardController extends Controller
             $sex = 'M';
         }
 
-        $race_db = DB::table('hisdb.racecode')
-                            ->where('compcode',$compcode)
-                            ->where('Code',$array_mycard[7]);
-        if(!$race_db->exists()){
-            DB::table('hisdb.racecode')
-                ->insert([
-                    'compcode' => $compcode, 
-                    'Code' => $array_mycard[7], 
-                    'Description' => $array_mycard[7], 
-                    'adduser' => 'SYSTEM',
-                    'adddate' => Carbon::now("Asia/Kuala_Lumpur")
-                ]);
-        }
+        // $race_db = DB::table('hisdb.racecode')
+        //                     ->where('compcode',$compcode)
+        //                     ->where('Code',$array_mycard[7]);
+        // if(!$race_db->exists()){
+        //     DB::table('hisdb.racecode')
+        //         ->insert([
+        //             'compcode' => $compcode, 
+        //             'Code' => $array_mycard[7], 
+        //             'Description' => $array_mycard[7], 
+        //             'adduser' => 'SYSTEM',
+        //             'adddate' => Carbon::now("Asia/Kuala_Lumpur")
+        //         ]);
+        // }
 
         if(strtoupper($array_mycard[14]) == 'WARGANEGARA' || strtoupper($array_mycard[14]) == 'CITIZEN' || strtoupper($array_mycard[14]) == 'W' || strtoupper($array_mycard[14]) == 'C'){
             $citizen = 'MAL';
@@ -168,8 +169,30 @@ class MycardController extends Controller
             $citizen = 'OTHERS';
         }
 
-        DB::table('hisdb.pre_pat_mast')
-                ->insert([
+        // DB::table('hisdb.pre_pat_mast')
+        //         ->insert([
+        //             'CompCode' => $compcode,
+        //             'Newic' => $array_mycard[0],
+        //             'DOB' => $dob,
+        //             'Name' => $array_mycard[3],
+        //             'Religion' => $array_mycard[5],
+        //             'Sex' => $sex,
+        //             'RaceCode' => $array_mycard[7],
+        //             'Address1' => $array_mycard[8],
+        //             'Address2' => $array_mycard[9],
+        //             'Address3' => $array_mycard[10],
+        //             'Postcode' => $array_mycard[11],
+        //             'Citizencode' => $citizen,
+        //             'ID_Type' => 'O',
+        //             'PatientImage' => 'data:image/png;base64,'.$array_mycard[15],
+        //             'rng' => $rng,
+        //             'read_date' => Carbon::now("Asia/Kuala_Lumpur")
+        //         ]);
+
+
+        $client = new Client();
+        $res = $client->request('POST', 'http://175.143.1.33:8080/dialysis/save_mykad_local', [
+            'form_params' => [
                     'CompCode' => $compcode,
                     'Newic' => $array_mycard[0],
                     'DOB' => $dob,
@@ -185,8 +208,12 @@ class MycardController extends Controller
                     'ID_Type' => 'O',
                     'PatientImage' => 'data:image/png;base64,'.$array_mycard[15],
                     'rng' => $rng,
-                    'read_date' => Carbon::now("Asia/Kuala_Lumpur")
-                ]);
+                ]
+        ]);
+
+        // $response= $res->getStatusCode();
+        
+        // if()
     }
 
     public function save_to_file_mykad($path,$array_mycard){
