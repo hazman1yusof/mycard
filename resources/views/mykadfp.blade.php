@@ -58,6 +58,7 @@
 		</div>
 
     	<input id="_token" name="_token" value="{{ csrf_token() }}" type="hidden">
+    	<input type="hidden" name="rng" id="rng" value="{{ Request::get("rng") }}">
     	<form class="ui form" id="myform">
 
     	<div class="ui grid">
